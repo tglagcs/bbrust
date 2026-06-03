@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-License-Identifier: GPL-3.0-or-later
+Copyright (c) 2008-2026 Andrew Ziem.
+
+This work is licensed under the terms of the GNU GPL, version 3 or
+later.  See the COPYING file in the top-level directory.
+
+Windows port: VS Code keeps its profile under %APPDATA%\Code.
+-->
+<cleaner id="vscode" os="windows">
+  <label>Visual Studio Code</label>
+  <description translators="Cleaner description for vim, VS Code, etc.">Editor</description>
+  <running type="exe" same_user="true">code.exe</running>
+  <option id="cache">
+    <label>Cache</label>
+    <description>Delete the cache</description>
+    <action command="delete" search="walk.all" path="%APPDATA%\Code\blob_storage"/>
+    <action command="delete" search="walk.all" path="%APPDATA%\Code\Cache"/>
+    <action command="delete" search="walk.all" path="%APPDATA%\Code\CachedConfigurations"/>
+    <action command="delete" search="walk.all" path="%APPDATA%\Code\CachedData"/>
+    <action command="delete" search="walk.all" path="%APPDATA%\Code\CachedExtensionVSIXs"/>
+    <action command="delete" search="walk.all" path="%APPDATA%\Code\CachedProfilesData"/>
+    <action command="delete" search="walk.all" path="%APPDATA%\Code\Code Cache"/>
+    <action command="delete" search="walk.all" path="%APPDATA%\Code\Crashpad"/>
+    <action command="delete" search="walk.all" path="%APPDATA%\Code\DawnGraphiteCache"/>
+    <action command="delete" search="walk.all" path="%APPDATA%\Code\DawnWebGPUCache"/>
+    <action command="delete" search="walk.all" path="%APPDATA%\Code\GPUCache"/>
+  </option>
+  <option id="backup">
+    <label>Backup files</label>
+    <description>Delete the backup files</description>
+    <action command="delete" search="walk.all" path="%APPDATA%\Code\User\History"/>
+  </option>
+  <option id="logs">
+    <label>Logs</label>
+    <description>Delete the logs</description>
+    <action command="delete" search="walk.all" path="%APPDATA%\Code\logs"/>
+  </option>
+</cleaner>

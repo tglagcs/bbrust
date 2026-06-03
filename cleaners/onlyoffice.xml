@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-License-Identifier: GPL-3.0-or-later
+
+Cleaner for ONLYOFFICE Desktop Editors on Windows. The application stores its
+profile, font cache and recovery data under %APPDATA%\ONLYOFFICE\DesktopEditors.
+-->
+<cleaner id="onlyoffice" os="windows">
+  <label>ONLYOFFICE</label>
+  <description>Office suite</description>
+  <running type="exe" same_user="true">DesktopEditors.exe</running>
+  <option id="cache">
+    <label>Cache</label>
+    <description>Delete the cache</description>
+    <action command="delete" search="walk.all" path="%APPDATA%\ONLYOFFICE\DesktopEditors\data\cache"/>
+    <action command="delete" search="walk.all" path="%APPDATA%\ONLYOFFICE\DesktopEditors\data\fonts"/>
+    <action command="delete" search="walk.all" path="%LOCALAPPDATA%\ONLYOFFICE\DesktopEditors\data\cache"/>
+  </option>
+  <option id="recent_documents">
+    <label>Recent documents list</label>
+    <description>Delete the list of recently used documents</description>
+    <action command="delete" search="walk.all" path="%APPDATA%\ONLYOFFICE\DesktopEditors\data\recover"/>
+    <action command="delete" search="glob" path="%APPDATA%\ONLYOFFICE\DesktopEditors\data\recents*"/>
+    <action command="delete" search="glob" path="%APPDATA%\ONLYOFFICE\DesktopEditors\data\*.json"/>
+  </option>
+</cleaner>

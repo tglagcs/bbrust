@@ -1,0 +1,46 @@
+name: Release
+
+# Build the Windows .exe and publish it to GitHub Releases whenever a version
+# tag (e.g. v0.1.0) is pushed. See "Triggering" in the README/below.
+on:
+  push:
+    tags:
+      - "v*"
+  # Allow building from the Actions tab without a tag (no release is published).
+  workflow_dispatch:
+
+permissions:
+  contents: write # needed to create the Release and upload assets
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust (stable, MSVC)
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build release
+        run: cargo build --release
+
+      - name: Compress with UPX
+        run: |
+          choco install upx -y --no-progress
+          upx --best --force target/release/bbrust.exe
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bbrust
+          path: target/release/bbrust.exe
+
+      - name: Publish to Releases
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: target/release/bbrust.exe
+          generate_release_notes: true

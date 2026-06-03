@@ -1,0 +1,45 @@
+[package]
+name = "bbrust"
+version = "0.1.0"
+edition = "2021"
+description = "Lightweight Windows-only fork of BleachBit, written in Rust"
+license = "GPL-3.0-or-later"
+default-run = "bbrust"
+
+[dependencies]
+quick-xml = "0.36"
+glob = "0.3"
+walkdir = "2.5"
+regex = "1.10"
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+toml = "0.8"
+log = "0.4"
+env_logger = "0.11"
+
+# Stage 2 — special actions.
+rusqlite = { version = "0.31", features = ["bundled"] }
+
+# Stage 3 — GUI (pure-Rust, single binary, no GTK/DLLs).
+eframe = { version = "0.28", default-features = false, features = ["glow", "default_fonts"] }
+# Native "open file" dialog for adding custom cleaners.
+rfd = "0.14"
+
+[target.'cfg(windows)'.dependencies]
+windows = { version = "0.58", features = [
+    "Win32_Foundation",
+    "Win32_System_Console",
+    "Win32_System_DataExchange",
+    "Win32_System_Registry",
+    "Win32_UI_Shell",
+] }
+
+[build-dependencies]
+winresource = "0.1"
+
+[profile.release]
+opt-level = "z"     # optimize for size (we then run upx --best)
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true

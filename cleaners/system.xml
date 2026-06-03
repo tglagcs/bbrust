@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    BleachBit
+    Copyright (C) 2008-2025 Andrew Ziem
+    https://www.bleachbit.org
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    Ported from BleachBit's built-in Python "system" cleaner to CleanerML so it
+    is editable at runtime like every other cleaner in bbrust.
+
+-->
+<cleaner id="system" os="windows">
+  <label>System</label>
+  <description>The system in general</description>
+  <option id="clipboard">
+    <label>Clipboard</label>
+    <description>The desktop environment's clipboard used for copy and paste operations</description>
+    <action command="clipboard.clear"/>
+  </option>
+  <option id="recycle_bin">
+    <label>Recycle bin</label>
+    <description>Empty the recycle bin</description>
+    <action command="recycle.bin.empty"/>
+  </option>
+  <option id="tmp">
+    <label>Temporary files</label>
+    <description>Delete the temporary files</description>
+    <action command="delete" search="walk.files" path="%TEMP%"/>
+    <action command="delete" search="walk.files" path="%WINDIR%\Temp"/>
+  </option>
+  <option id="muicache">
+    <label>MUICache</label>
+    <description>Delete the cache</description>
+    <action command="winreg" path="HKCU\Software\Microsoft\Windows\ShellNoRoam\MUICache"/>
+    <action command="winreg" path="HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell\MuiCache"/>
+  </option>
+  <option id="logs">
+    <label>Event logs</label>
+    <description>Delete the logs</description>
+    <action command="delete" search="glob" path="%ALLUSERSPROFILE%\Application Data\Microsoft\Dr Watson\*.log"/>
+    <action command="delete" search="glob" path="%ALLUSERSPROFILE%\Application Data\Microsoft\Dr Watson\user.dmp"/>
+    <action command="delete" search="walk.files" path="%LOCALAPPDATA%\Microsoft\Windows\WER\ReportArchive"/>
+    <action command="delete" search="walk.files" path="%LOCALAPPDATA%\Microsoft\Windows\WER\ReportQueue"/>
+    <action command="delete" search="walk.files" path="%PROGRAMDATA%\Microsoft\Windows\WER\ReportArchive"/>
+    <action command="delete" search="walk.files" path="%PROGRAMDATA%\Microsoft\Windows\WER\ReportQueue"/>
+    <action command="delete" search="glob" path="%LOCALAPPDATA%\Microsoft\Internet Explorer\brndlog.bak"/>
+    <action command="delete" search="glob" path="%LOCALAPPDATA%\Microsoft\Internet Explorer\brndlog.txt"/>
+    <action command="delete" search="glob" path="%WINDIR%\*.log"/>
+    <action command="delete" search="file" path="%WINDIR%\imsins.BAK"/>
+    <action command="delete" search="file" path="%WINDIR%\OEWABLog.txt"/>
+    <action command="delete" search="file" path="%WINDIR%\SchedLgU.txt"/>
+    <action command="delete" search="file" path="%WINDIR%\ntbtlog.txt"/>
+    <action command="delete" search="file" path="%WINDIR%\setuplog.txt"/>
+    <action command="delete" search="file" path="%WINDIR%\REGLOCS.OLD"/>
+    <action command="delete" search="glob" path="%WINDIR%\Debug\*.log"/>
+    <action command="delete" search="glob" path="%WINDIR%\Debug\UserMode\*.log"/>
+    <action command="delete" search="glob" path="%WINDIR%\security\logs\*.log"/>
+    <action command="delete" search="glob" path="%WINDIR%\security\logs\*.old"/>
+    <action command="delete" search="glob" path="%WINDIR%\SoftwareDistribution\*.log"/>
+    <action command="delete" search="glob" path="%WINDIR%\SoftwareDistribution\DataStore\Logs\*"/>
+    <action command="delete" search="glob" path="%WINDIR%\System32\LogFiles\Firewall\pfirewall.log*"/>
+    <action command="delete" search="glob" path="%WINDIR%\System32\wbem\Logs\*.log"/>
+    <action command="delete" search="glob" path="%WINDIR%\System32\wbem\Logs\*.lo_"/>
+  </option>
+</cleaner>
