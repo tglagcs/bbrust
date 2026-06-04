@@ -189,7 +189,7 @@ fn run_command(cmd: &Command, really_delete: bool) -> Result<Option<Line>, Strin
         Command::Delete { path, shred } => {
             let size = path_size(path);
             let display = path.display().to_string();
-            let verb = if really_delete { "Deleted" } else { "Delete" };
+            let verb = if really_delete { "Deleted" } else { "To be deleted" };
             if really_delete {
                 delete_path(path, *shred).map_err(|e| format!("{display}: {e}"))?;
             }
