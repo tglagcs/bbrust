@@ -208,6 +208,20 @@ bbrust --cleaners-dir <path>       использовать другой кат�
 проверен и скопирован в `%APPDATA%\bbrust\cleaners\`, который загружается дополнительно к встроенным
 (и может их переопределять). **📁 Папка** открывает этот каталог.
 
+Минимальный чистильщик выглядит так:
+
+```xml
+<cleaner id="myapp">
+  <label>My App</label>
+  <description>Example application</description>
+  <option id="cache">
+    <label>Cache</label>
+    <description>Delete the cache</description>
+    <action command="delete" search="walk.all" path="%APPDATA%\MyApp\cache"/>
+  </option>
+</cleaner>
+```
+
 > Свои чистильщики могут удалить любые файлы, на которые указывают, — добавляйте только проверенные.
 
 ### Чем отличается от BleachBit
