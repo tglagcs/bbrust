@@ -49,6 +49,8 @@ pub enum Key {
     CustomWarning,
     CustomAdded,
     CustomInvalid,
+    Filter,
+    ErrorsOnly,
 }
 
 /// Lazily-built lookup for dynamic, cleaner-supplied strings.
@@ -144,5 +146,9 @@ pub fn t(lang: Lang, key: Key) -> &'static str {
         (Ru, CustomAdded) => "Свой чистильщик добавлен.",
         (En, CustomInvalid) => "Invalid CleanerML file.",
         (Ru, CustomInvalid) => "Неверный файл CleanerML.",
+        (En, Filter) => "Filter",
+        (Ru, Filter) => "Фильтр",
+        (En, ErrorsOnly) => "Errors only",
+        (Ru, ErrorsOnly) => "Только ошибки",
     }
 }

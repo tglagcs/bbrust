@@ -5,6 +5,18 @@
 
 /// English -> Russian for labels/warnings used by the bundled cleaners.
 pub static RU_PAIRS: &[(&str, &str)] = &[
+    // Manually added (BleachBit's po/ru.po is not available on this machine to
+    // regenerate from). Keep in sync with the MANUAL dict in gen_translations.py.
+    ("Package and build caches", "Кэши пакетов и сборки"),
+    ("Version control", "Контроль версий"),
+    ("Containers", "Контейнеры"),
+    ("SSH client", "SSH-клиент"),
+    ("Notes", "Заметки"),
+    ("E-book reader", "Читалка книг"),
+    ("Dictation", "Голосовой ввод"),
+    ("Game platform", "Игровая платформа"),
+    ("AMD shader cache", "Кэш шейдеров AMD"),
+    ("Certificate URL cache", "Кэш URL сертификатов"),
     ("A database of URLs including bookmarks, favicons, and a history of visited websites", "База данных веб-ссылок, включая закладки, значки и журнал посещения веб-сайтов"),
     ("A database of usernames and passwords as well as a list of sites that should not store passwords", "База данных имён пользователей и паролей, а также список сайтов, для которых не нужно сохранять пароли"),
     ("A history of forms entered in websites", "Журнал форм ввода на веб-сайтах"),

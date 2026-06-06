@@ -92,6 +92,16 @@ MANUAL = {
     "Event logs": "Журналы событий",
     "MUICache": "MUICache",
     "ONLYOFFICE": "ONLYOFFICE",
+    "Package and build caches": "Кэши пакетов и сборки",
+    "Version control": "Контроль версий",
+    "Containers": "Контейнеры",
+    "SSH client": "SSH-клиент",
+    "Notes": "Заметки",
+    "E-book reader": "Читалка книг",
+    "Dictation": "Голосовой ввод",
+    "Game platform": "Игровая платформа",
+    "AMD shader cache": "Кэш шейдеров AMD",
+    "Certificate URL cache": "Кэш URL сертификатов",
 }
 
 

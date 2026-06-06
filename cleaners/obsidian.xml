@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-License-Identifier: GPL-3.0-or-later
+
+Obsidian (Electron notes app). Only the Chromium HTTP cache under
+%APPDATA%\obsidian\Cache is touched; vaults and settings are left intact.
+-->
+<cleaner id="obsidian" os="windows">
+  <label>Obsidian</label>
+  <description>Notes</description>
+  <option id="cache">
+    <label>Cache</label>
+    <description>Delete the cache</description>
+    <action command="delete" search="walk.all" path="%APPDATA%\obsidian\Cache"/>
+  </option>
+</cleaner>

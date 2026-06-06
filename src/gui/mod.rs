@@ -40,6 +40,12 @@ struct OptView {
     warning: Option<String>,
 }
 
+/// One line of the action log, tagged so errors can be coloured and filtered.
+struct LogLine {
+    text: String,
+    error: bool,
+}
+
 /// Flatten loaded cleaners into category-grouped views for rendering. Options
 /// with no runnable actions and empty categories are dropped.
 fn build_tree(backends: &Backends) -> Vec<CategoryView> {
@@ -135,7 +141,11 @@ struct BbApp {
     selected: BTreeSet<OptKey>,
     /// Per-option recovered size from the last preview.
     sizes: HashMap<OptKey, u64>,
-    log: String,
+    log: Vec<LogLine>,
+    /// Substring filter for the log (case-insensitive); empty shows everything.
+    log_filter: String,
+    /// When set, only error lines are shown.
+    errors_only: bool,
     status: String,
     progress: f32,
     really_delete: bool,
@@ -189,7 +199,9 @@ impl BbApp {
             dirty: false,
             selected,
             sizes: HashMap::new(),
-            log: String::new(),
+            log: Vec::new(),
+            log_filter: String::new(),
+            errors_only: false,
             status: format!("{count} {}", t(lang, Key::CleanersLoaded)),
             progress: 0.0,
             really_delete: false,
@@ -344,8 +356,10 @@ impl BbApp {
             WorkerEvent::Progress(p) => self.progress = p,
             WorkerEvent::Status(s) => self.status = s,
             WorkerEvent::Line(line) => {
-                self.log.push_str(&line);
-                self.log.push('\n');
+                // The worker emits failures as "Error: ...". Tag them so the UI
+                // can colour them red and the "errors only" filter can find them.
+                let error = line.starts_with("Error");
+                self.log.push(LogLine { text: line, error });
             }
             WorkerEvent::ItemSize {
                 cleaner,
@@ -382,22 +396,20 @@ impl BbApp {
         } else {
             Key::FilesToDelete
         };
-        self.log.push('\n');
-        self.log
-            .push_str(&format!("{}: {}\n", t(l, disk_key), bytes_to_human(bytes as i64)));
-        self.log
-            .push_str(&format!("{}: {files}\n", t(l, files_key)));
+        let mut push = |text: String, error: bool| self.log.push(LogLine { text, error });
+        push(String::new(), false);
+        push(format!("{}: {}", t(l, disk_key), bytes_to_human(bytes as i64)), false);
+        push(format!("{}: {files}", t(l, files_key)), false);
         if special > 0 {
-            self.log
-                .push_str(&format!("{}: {special}\n", t(l, Key::SpecialOps)));
+            push(format!("{}: {special}", t(l, Key::SpecialOps)), false);
         }
         if errors > 0 {
-            self.log
-                .push_str(&format!("{}: {errors}\n", t(l, Key::Errors)));
+            // Mark the summary error count red too, so it stands out and shows
+            // under the "errors only" filter.
+            push(format!("{}: {errors}", t(l, Key::Errors)), true);
         }
         if aborted {
-            self.log.push_str(t(l, Key::Aborted));
-            self.log.push('\n');
+            push(t(l, Key::Aborted).to_string(), false);
         }
     }
 
@@ -519,21 +531,24 @@ impl eframe::App for BbApp {
                 });
             });
 
-        // Center: the action log.
+        // Center: the action log, with a filter bar above it.
         egui::CentralPanel::default().show(ctx, |ui| {
-            egui::ScrollArea::vertical()
-                .auto_shrink([false, false])
-                .stick_to_bottom(true)
-                .show(ui, |ui| {
-                    // egui's TextBuffer needs a binding; `&str` renders read-only.
-                    let mut text: &str = self.log.as_str();
-                    ui.add(
-                        egui::TextEdit::multiline(&mut text)
-                            .font(egui::TextStyle::Monospace)
-                            .desired_width(f32::INFINITY)
-                            .interactive(false),
-                    );
-                });
+            let filter_label = self.tr(Key::Filter);
+            let errors_only_label = self.tr(Key::ErrorsOnly);
+            ui.horizontal(|ui| {
+                ui.label(format!("{filter_label}:"));
+                ui.add(
+                    egui::TextEdit::singleline(&mut self.log_filter)
+                        .desired_width(220.0)
+                        .hint_text(filter_label),
+                );
+                if ui.button("✖").clicked() {
+                    self.log_filter.clear();
+                }
+                ui.checkbox(&mut self.errors_only, errors_only_label);
+            });
+            ui.separator();
+            self.draw_log(ui);
         });
 
         // Confirmation modal for real deletion.
@@ -643,6 +658,43 @@ impl BbApp {
                 }
             });
         }
+    }
+
+    /// Render the action log: red error lines, filtered by substring and/or the
+    /// "errors only" toggle. Rows are virtualised so a huge clean (thousands of
+    /// deleted files) stays smooth.
+    fn draw_log(&mut self, ui: &mut eframe::egui::Ui) {
+        use eframe::egui;
+
+        let needle = self.log_filter.to_lowercase();
+        let visible: Vec<&LogLine> = self
+            .log
+            .iter()
+            .filter(|l| !self.errors_only || l.error)
+            .filter(|l| needle.is_empty() || l.text.to_lowercase().contains(&needle))
+            .collect();
+
+        let row_height = ui.text_style_height(&egui::TextStyle::Monospace);
+        let error_color = egui::Color32::from_rgb(220, 80, 80);
+        // Only stick to the bottom when viewing the full, unfiltered log — while
+        // filtering the user is inspecting, so don't yank the scroll position.
+        let stick = needle.is_empty() && !self.errors_only;
+
+        // `both()` adds a horizontal scrollbar for long paths; rows stay
+        // vertically virtualised via show_rows.
+        egui::ScrollArea::both()
+            .auto_shrink([false, false])
+            .stick_to_bottom(stick)
+            .show_rows(ui, row_height, visible.len(), |ui, range| {
+                ui.spacing_mut().item_spacing.y = 0.0;
+                for line in &visible[range] {
+                    let mut text = egui::RichText::new(&line.text).monospace();
+                    if line.error {
+                        text = text.color(error_color);
+                    }
+                    ui.add(egui::Label::new(text).wrap_mode(egui::TextWrapMode::Extend));
+                }
+            });
     }
 
     fn draw_confirm(&mut self, ctx: &eframe::egui::Context) {

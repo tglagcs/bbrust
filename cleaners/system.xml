@@ -38,6 +38,17 @@
     <action command="delete" search="walk.files" path="%TEMP%"/>
     <action command="delete" search="walk.files" path="%WINDIR%\Temp"/>
   </option>
+  <option id="amd_shader_cache">
+    <label>AMD shader cache</label>
+    <description>Delete the cache</description>
+    <action command="delete" search="walk.all" path="%LOCALAPPDATA%\AMD\*Cache"/>
+    <action command="delete" search="walk.all" path="%USERPROFILE%\AppData\LocalLow\AMD\*Cache"/>
+  </option>
+  <option id="cryptnet_cache">
+    <label>Certificate URL cache</label>
+    <description>Delete the cache</description>
+    <action command="delete" search="walk.all" path="%USERPROFILE%\AppData\LocalLow\Microsoft\CryptnetUrlCache"/>
+  </option>
   <option id="muicache">
     <label>MUICache</label>
     <description>Delete the cache</description>

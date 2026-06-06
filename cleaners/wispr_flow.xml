@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-License-Identifier: GPL-3.0-or-later
+
+Wispr Flow (Electron dictation app). Only the Chromium HTTP cache under
+%APPDATA%\Wispr Flow\Cache is touched; settings are left intact.
+-->
+<cleaner id="wispr_flow" os="windows">
+  <label>Wispr Flow</label>
+  <description>Dictation</description>
+  <option id="cache">
+    <label>Cache</label>
+    <description>Delete the cache</description>
+    <action command="delete" search="walk.all" path="%APPDATA%\Wispr Flow\Cache"/>
+  </option>
+</cleaner>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-License-Identifier: GPL-3.0-or-later
+
+GitHub Desktop (Electron). The Chromium HTTP cache under
+%APPDATA%\GitHub Desktop\Cache is regenerated on demand.
+-->
+<cleaner id="github_desktop" os="windows">
+  <label>GitHub Desktop</label>
+  <description>Version control</description>
+  <option id="cache">
+    <label>Cache</label>
+    <description>Delete the cache</description>
+    <action command="delete" search="walk.all" path="%APPDATA%\GitHub Desktop\Cache"/>
+  </option>
+</cleaner>

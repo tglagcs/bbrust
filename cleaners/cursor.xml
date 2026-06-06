@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-License-Identifier: GPL-3.0-or-later
+
+Cursor (Electron-based code editor). The Chromium HTTP cache under
+%APPDATA%\Cursor\Cache is regenerated on demand.
+-->
+<cleaner id="cursor" os="windows">
+  <label>Cursor</label>
+  <description>Editor</description>
+  <option id="cache">
+    <label>Cache</label>
+    <description>Delete the cache</description>
+    <action command="delete" search="walk.all" path="%APPDATA%\Cursor\Cache"/>
+  </option>
+</cleaner>

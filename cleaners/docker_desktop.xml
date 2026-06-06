@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-License-Identifier: GPL-3.0-or-later
+
+Docker Desktop (Electron UI). Only the Chromium HTTP cache under
+%APPDATA%\Docker Desktop\Cache is touched; images, volumes and settings are
+left intact.
+-->
+<cleaner id="docker_desktop" os="windows">
+  <label>Docker Desktop</label>
+  <description>Containers</description>
+  <option id="cache">
+    <label>Cache</label>
+    <description>Delete the cache</description>
+    <action command="delete" search="walk.all" path="%APPDATA%\Docker Desktop\Cache"/>
+  </option>
+</cleaner>

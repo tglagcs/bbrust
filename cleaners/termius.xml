@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-License-Identifier: GPL-3.0-or-later
+
+Termius (Electron SSH client). Only the Chromium HTTP cache under
+%APPDATA%\Termius\Cache is touched; hosts, keys and settings are left intact.
+-->
+<cleaner id="termius" os="windows">
+  <label>Termius</label>
+  <description>SSH client</description>
+  <option id="cache">
+    <label>Cache</label>
+    <description>Delete the cache</description>
+    <action command="delete" search="walk.all" path="%APPDATA%\Termius\Cache"/>
+  </option>
+</cleaner>

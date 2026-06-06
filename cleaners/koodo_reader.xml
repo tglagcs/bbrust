@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-License-Identifier: GPL-3.0-or-later
+
+Koodo Reader (Electron e-book reader). Only the Chromium HTTP cache under
+%APPDATA%\koodo-reader\Cache is touched; the library and settings are left
+intact.
+-->
+<cleaner id="koodo_reader" os="windows">
+  <label>Koodo Reader</label>
+  <description>E-book reader</description>
+  <option id="cache">
+    <label>Cache</label>
+    <description>Delete the cache</description>
+    <action command="delete" search="walk.all" path="%APPDATA%\koodo-reader\Cache"/>
+  </option>
+</cleaner>

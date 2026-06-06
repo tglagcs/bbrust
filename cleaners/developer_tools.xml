@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-License-Identifier: GPL-3.0-or-later
+
+Download/build caches of common command-line developer tools. All of these are
+safe to delete: each tool re-downloads or rebuilds on demand.
+
+Note for Cargo: only registry\cache (downloaded .crate archives) and
+registry\src (extracted sources) are removed. registry\index and the user's
+config are left intact, so the next build just re-fetches what it needs.
+-->
+<cleaner id="developer_tools" os="windows">
+  <label>Developer tools</label>
+  <description>Package and build caches</description>
+  <option id="npm">
+    <label>npm</label>
+    <description>Delete the cache</description>
+    <action command="delete" search="walk.all" path="%LOCALAPPDATA%\npm-cache"/>
+  </option>
+  <option id="pip">
+    <label>pip</label>
+    <description>Delete the cache</description>
+    <action command="delete" search="walk.all" path="%LOCALAPPDATA%\pip\cache"/>
+  </option>
+  <option id="cargo">
+    <label>Cargo</label>
+    <description>Delete the cache</description>
+    <action command="delete" search="walk.all" path="%USERPROFILE%\.cargo\registry\cache"/>
+    <action command="delete" search="walk.all" path="%USERPROFILE%\.cargo\registry\src"/>
+  </option>
+  <option id="scoop">
+    <label>Scoop</label>
+    <description>Delete the cache</description>
+    <action command="delete" search="walk.all" path="%USERPROFILE%\scoop\cache"/>
+  </option>
+  <option id="ripgrep">
+    <label>ripgrep</label>
+    <description>Delete the cache</description>
+    <action command="delete" search="walk.all" path="%USERPROFILE%\.cache\vscode-ripgrep"/>
+  </option>
+</cleaner>

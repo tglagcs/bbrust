@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-License-Identifier: GPL-3.0-or-later
+
+Steam's embedded browser (htmlcache) is a full Chromium profile, so we touch
+ONLY its cache subfolders and never the profile itself (cookies, the store login
+and other state live in htmlcache\Default and are left intact). The shader
+caches are rebuilt by the GPU driver; the HTTP cache is re-fetched.
+-->
+<cleaner id="steam" os="windows">
+  <label>Steam</label>
+  <description>Game platform</description>
+  <option id="cache">
+    <label>Cache</label>
+    <description>Delete the cache</description>
+    <action command="delete" search="walk.all" path="%LOCALAPPDATA%\Steam\htmlcache\Cache"/>
+    <action command="delete" search="walk.all" path="%LOCALAPPDATA%\Steam\htmlcache\GPUCache"/>
+    <action command="delete" search="walk.all" path="%LOCALAPPDATA%\Steam\htmlcache\ShaderCache"/>
+    <action command="delete" search="walk.all" path="%LOCALAPPDATA%\Steam\htmlcache\GrShaderCache"/>
+    <action command="delete" search="walk.all" path="%LOCALAPPDATA%\Steam\htmlcache\GraphiteDawnCache"/>
+  </option>
+</cleaner>

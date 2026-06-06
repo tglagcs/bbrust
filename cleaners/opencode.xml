@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-License-Identifier: GPL-3.0-or-later
+
+opencode desktop (Electron). Chromium cache lives under
+%APPDATA%\ai.opencode.desktop\Cache; a separate tool cache sits in
+%USERPROFILE%\.cache\opencode. Both are regenerated on demand.
+-->
+<cleaner id="opencode" os="windows">
+  <label>opencode</label>
+  <description>Editor</description>
+  <option id="cache">
+    <label>Cache</label>
+    <description>Delete the cache</description>
+    <action command="delete" search="walk.all" path="%APPDATA%\ai.opencode.desktop\Cache"/>
+    <action command="delete" search="walk.all" path="%USERPROFILE%\.cache\opencode"/>
+  </option>
+</cleaner>

@@ -67,7 +67,10 @@ pub fn for_id(id: &str) -> Category {
 
         "vlc" | "gimp" => Media,
 
-        "java" | "vim" | "vscode" | "claude" => Development,
+        "java" | "vim" | "vscode" | "claude" | "cursor" | "opencode" | "github_desktop"
+        | "docker_desktop" | "termius" | "developer_tools" => Development,
+
+        "obsidian" | "koodo_reader" | "wispr_flow" | "steam" => Other,
 
         "windows_explorer" | "windows_defender" | "windows_media_player" | "paint" | "system" => {
             System
