@@ -182,7 +182,8 @@ fn item_is_history(e: &quick_xml::events::BytesStart, prefix: &str) -> bool {
 
 /// Run an external command line. When `wait`, block and warn on non-zero exit.
 pub fn run_process(cmd: &str, wait: bool) -> Result<(), String> {
-    let args = shell_split(cmd);
+    let cmd = crate::util::expand_env_command(cmd);
+    let args = shell_split(&cmd);
     let Some((program, rest)) = args.split_first() else {
         return Err("empty command".to_string());
     };
@@ -282,6 +283,15 @@ mod tests {
     #[test]
     fn shell_split_handles_quotes() {
         assert_eq!(shell_split(r#"a "b c" d"#), vec!["a", "b c", "d"]);
+    }
+
+    #[cfg(windows)]
+    #[test]
+    fn run_process_expands_env_vars() {
+        // `%WINDIR%\system32\cmd.exe /c exit` only resolves to a runnable program
+        // if %WINDIR% is expanded first; otherwise Command::new fails with "program
+        // not found" — the same failure that left Explorer killed but not relaunched.
+        run_process("%WINDIR%\\system32\\cmd.exe /c exit", true).unwrap();
     }
 
     #[test]

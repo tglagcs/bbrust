@@ -97,6 +97,17 @@ fn expand_env_vars(input: &str) -> Option<String> {
     Some(out)
 }
 
+/// Expand `%VAR%` in an arbitrary string such as a `process` command line.
+///
+/// Unlike [`expand_path`], this does no path normalization and never discards
+/// the string: an unset variable is left as the literal `%VAR%` rather than
+/// failing. Without this, a command like `%WINDIR%\explorer.exe` would be passed
+/// verbatim to the OS, which can't find a program by that name (e.g. Windows
+/// Explorer would be killed but never relaunched).
+pub fn expand_env_command(input: &str) -> String {
+    expand_env_vars(input).unwrap_or_else(|| input.to_string())
+}
+
 fn home_dir() -> Option<String> {
     std::env::var("USERPROFILE")
         .ok()
