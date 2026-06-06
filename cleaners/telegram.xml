@@ -17,25 +17,25 @@ For an unusual portable location, add a custom cleaner via the GUI.
   <option id="cache">
     <label>Cache</label>
     <description>Delete the cache</description>
-    <action command="delete" search="walk.all" path="%APPDATA%\Telegram Desktop\tdata\user_data*\cache"/>
-    <action command="delete" search="walk.all" path="%USERPROFILE%\Downloads\Telegram*\tdata\user_data*\cache"/>
-    <action command="delete" search="walk.all" path="%USERPROFILE%\Desktop\Telegram*\tdata\user_data*\cache"/>
-    <action command="delete" search="walk.all" path="%USERPROFILE%\Documents\Telegram*\tdata\user_data*\cache"/>
-    <action command="delete" search="walk.all" path="C:\Telegram*\tdata\user_data*\cache"/>
-    <action command="delete" search="walk.all" path="D:\Telegram*\tdata\user_data*\cache"/>
-    <action command="delete" search="walk.all" path="E:\Telegram*\tdata\user_data*\cache"/>
-    <action command="delete" search="walk.all" path="F:\Telegram*\tdata\user_data*\cache"/>
+    <action command="delete" search="glob" path="%APPDATA%\Telegram Desktop\tdata\user_data*\cache"/>
+    <action command="delete" search="glob" path="%USERPROFILE%\Downloads\Telegram*\tdata\user_data*\cache"/>
+    <action command="delete" search="glob" path="%USERPROFILE%\Desktop\Telegram*\tdata\user_data*\cache"/>
+    <action command="delete" search="glob" path="%USERPROFILE%\Documents\Telegram*\tdata\user_data*\cache"/>
+    <action command="delete" search="glob" path="C:\Telegram*\tdata\user_data*\cache"/>
+    <action command="delete" search="glob" path="D:\Telegram*\tdata\user_data*\cache"/>
+    <action command="delete" search="glob" path="E:\Telegram*\tdata\user_data*\cache"/>
+    <action command="delete" search="glob" path="F:\Telegram*\tdata\user_data*\cache"/>
   </option>
   <option id="media_cache">
     <label>Media cache</label>
     <description>Delete the cache</description>
-    <action command="delete" search="walk.all" path="%APPDATA%\Telegram Desktop\tdata\user_data*\media_cache"/>
-    <action command="delete" search="walk.all" path="%USERPROFILE%\Downloads\Telegram*\tdata\user_data*\media_cache"/>
-    <action command="delete" search="walk.all" path="%USERPROFILE%\Desktop\Telegram*\tdata\user_data*\media_cache"/>
-    <action command="delete" search="walk.all" path="%USERPROFILE%\Documents\Telegram*\tdata\user_data*\media_cache"/>
-    <action command="delete" search="walk.all" path="C:\Telegram*\tdata\user_data*\media_cache"/>
-    <action command="delete" search="walk.all" path="D:\Telegram*\tdata\user_data*\media_cache"/>
-    <action command="delete" search="walk.all" path="E:\Telegram*\tdata\user_data*\media_cache"/>
-    <action command="delete" search="walk.all" path="F:\Telegram*\tdata\user_data*\media_cache"/>
+    <action command="delete" search="glob" path="%APPDATA%\Telegram Desktop\tdata\user_data*\media_cache"/>
+    <action command="delete" search="glob" path="%USERPROFILE%\Downloads\Telegram*\tdata\user_data*\media_cache"/>
+    <action command="delete" search="glob" path="%USERPROFILE%\Desktop\Telegram*\tdata\user_data*\media_cache"/>
+    <action command="delete" search="glob" path="%USERPROFILE%\Documents\Telegram*\tdata\user_data*\media_cache"/>
+    <action command="delete" search="glob" path="C:\Telegram*\tdata\user_data*\media_cache"/>
+    <action command="delete" search="glob" path="D:\Telegram*\tdata\user_data*\media_cache"/>
+    <action command="delete" search="glob" path="E:\Telegram*\tdata\user_data*\media_cache"/>
+    <action command="delete" search="glob" path="F:\Telegram*\tdata\user_data*\media_cache"/>
   </option>
 </cleaner>

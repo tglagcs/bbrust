@@ -379,7 +379,12 @@ fn delete_path(path: &Path, shred: bool) -> std::io::Result<()> {
     let ft = meta.file_type();
 
     if ft.is_dir() && !ft.is_symlink() {
-        return std::fs::remove_dir(path);
+        // Remove the whole subtree in one call. When a searcher already emitted
+        // the children individually (walk.all/walk.top), the directory is empty
+        // by now and this behaves like remove_dir; when a searcher targets a
+        // directory directly (e.g. Telegram's cache folder via glob), this wipes
+        // it wholesale without enumerating every file first.
+        return std::fs::remove_dir_all(path);
     }
 
     if shred && ft.is_file() {

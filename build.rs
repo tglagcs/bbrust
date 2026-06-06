@@ -61,17 +61,108 @@ fn embed_cleaners() {
 }
 
 /// Embed the application icon and manifest (DPI awareness, exec level) into the
-/// .exe. Uses `winresource`, which drives `windres` on the GNU toolchain.
+/// .exe.
+///
+/// The GNU and MSVC toolchains need different paths:
+/// - **GNU** (the local dev machine): drive `windres`/`ar` directly. We can't use
+///   the `winresource` crate here because it passes the manifest dir as an
+///   unquoted `-I<dir>` to windres' C preprocessor, which splits on the space in
+///   this repo's path ("...\GITHUB PROJECTS\...") and aborts with
+///   `cc1.exe: fatal error: PROJECTS\bbrust: No such file or directory`, so no
+///   resources (icon included) ever get embedded.
+/// - **MSVC** (the CI release runner, whose checkout path has no spaces): let
+///   `winresource` drive `rc.exe`, since `windres`/`ar` aren't present there.
 fn embed_resources() {
     println!("cargo:rerun-if-changed=assets/icon.ico");
     println!("cargo:rerun-if-changed=assets/bbrust.manifest");
+
+    if std::env::var("CARGO_CFG_TARGET_ENV").as_deref() == Ok("gnu") {
+        embed_resources_gnu();
+    } else {
+        embed_resources_winresource();
+    }
+}
+
+/// MSVC path: `winresource` → `rc.exe`. Used on CI; relies on a space-free path.
+fn embed_resources_winresource() {
+    let manifest_dir = std::env::var("CARGO_MANIFEST_DIR").unwrap();
+    let icon = Path::new(&manifest_dir).join("assets/icon.ico");
+    let app_manifest = Path::new(&manifest_dir).join("assets/bbrust.manifest");
     let mut res = winresource::WindowsResource::new();
-    res.set_icon("assets/icon.ico");
-    res.set_manifest_file("assets/bbrust.manifest");
+    res.set_icon(&icon.to_string_lossy());
+    res.set_manifest_file(&app_manifest.to_string_lossy());
     if let Err(e) = res.compile() {
         // Don't fail the build on resource-compile issues; just warn.
         println!("cargo:warning=resource embedding failed: {e}");
     }
+}
+
+/// GNU path: generate a `.rc` with quoted, forward-slash absolute paths and drive
+/// `windres`/`ar` ourselves, sidestepping winresource's broken `-I` quoting.
+fn embed_resources_gnu() {
+    let manifest_dir = std::env::var("CARGO_MANIFEST_DIR").unwrap();
+    let out_dir = std::env::var("OUT_DIR").unwrap();
+    // Forward slashes work for both windres' file resolution and `.rc` quoting,
+    // and a space inside a quoted resource path is handled fine by windres.
+    let to_rc = |p: &Path| p.to_string_lossy().replace('\\', "/");
+    let icon = to_rc(&Path::new(&manifest_dir).join("assets/icon.ico"));
+    let app_manifest = to_rc(&Path::new(&manifest_dir).join("assets/bbrust.manifest"));
+
+    let rc_path = Path::new(&out_dir).join("resource.rc");
+    let rc = format!("1 ICON \"{icon}\"\n1 24 \"{app_manifest}\"\n");
+    if let Err(e) = std::fs::write(&rc_path, rc) {
+        println!("cargo:warning=could not write resource.rc: {e}");
+        return;
+    }
+
+    // windres -> resource.o, then ar -> libresource.a, linked whole-archive so
+    // the linker keeps the resource section even though nothing references it.
+    let obj = Path::new(&out_dir).join("resource.o");
+    if !run_tool(
+        &["x86_64-w64-mingw32-windres", "windres"],
+        &out_dir,
+        &[
+            "--target",
+            "pe-x86-64",
+            "-i",
+            &rc_path.to_string_lossy(),
+            "-o",
+            &obj.to_string_lossy(),
+        ],
+        "windres",
+    ) {
+        return;
+    }
+
+    let lib = Path::new(&out_dir).join("libresource.a");
+    if !run_tool(
+        &["x86_64-w64-mingw32-ar", "ar"],
+        &out_dir,
+        &["rcs", &lib.to_string_lossy(), &obj.to_string_lossy()],
+        "ar",
+    ) {
+        return;
+    }
+
+    println!("cargo:rustc-link-search=native={out_dir}");
+    println!("cargo:rustc-link-lib=static:+whole-archive=resource");
+}
+
+/// Run the first of `candidates` that exists, with the given args and cwd.
+/// Returns true on success; warns (but doesn't fail the build) otherwise.
+fn run_tool(candidates: &[&str], cwd: &str, args: &[&str], label: &str) -> bool {
+    for tool in candidates {
+        match Command::new(tool).current_dir(cwd).args(args).status() {
+            Ok(status) if status.success() => return true,
+            Ok(status) => {
+                println!("cargo:warning={label} ({tool}) failed with {status}");
+                return false;
+            }
+            Err(_) => continue, // tool not found under this name; try the next
+        }
+    }
+    println!("cargo:warning={label} not found (tried {candidates:?}); icon not embedded");
+    false
 }
 
 /// rustup's self-contained MinGW lacks some import libraries eframe/winit need

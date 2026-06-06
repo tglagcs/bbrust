@@ -18,6 +18,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # MSVC toolchain: build.rs embeds the icon/manifest via winresource (rc.exe)
+      # on MSVC. The runner's checkout path has no spaces, so winresource works
+      # here (locally on a GNU toolchain it drives windres/ar instead).
       - name: Install Rust (stable, MSVC)
         uses: dtolnay/rust-toolchain@stable
 

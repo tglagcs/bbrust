@@ -122,7 +122,26 @@ pub fn has_glob(s: &str) -> bool {
     s.bytes().any(|b| matches!(b, b'*' | b'?' | b'[' | b']'))
 }
 
-/// Best-effort size of a file or symlink in bytes; 0 if it cannot be read.
+/// Best-effort size of a path in bytes; 0 if it cannot be read.
+///
+/// For a regular file or symlink this is its own length. For a directory it is
+/// the recursive sum of the files within (symlinks are not followed), so callers
+/// that delete a whole folder at once can report what the tree was worth without
+/// stat-ing every file separately upstream.
 pub fn path_size(path: &Path) -> u64 {
-    std::fs::symlink_metadata(path).map(|m| m.len()).unwrap_or(0)
+    let meta = match std::fs::symlink_metadata(path) {
+        Ok(m) => m,
+        Err(_) => return 0,
+    };
+    if !meta.is_dir() {
+        return meta.len();
+    }
+    walkdir::WalkDir::new(path)
+        .follow_links(false)
+        .into_iter()
+        .flatten()
+        .filter(|e| e.file_type().is_file())
+        .filter_map(|e| e.metadata().ok())
+        .map(|m| m.len())
+        .sum()
 }
