@@ -2,7 +2,7 @@
 
 # bbrust
 
-**[English](#english) · [Русский](#русский)**
+**🇬🇧 [English](#english) · 🇷🇺 [Русский](#русский)**
 
 <img src="assets/icon.png" width="96" alt="bbrust">
 
