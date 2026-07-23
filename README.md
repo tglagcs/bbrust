@@ -1,10 +1,8 @@
 <div align="center">
 
-# 🧹 bbrust
+# <img src="assets/icon.png" alt="" height="45" align="top"> bbrust
 
 **🇬🇧 [English](#english) · 🇷🇺 [Русский](#русский)**
-
-<img src="assets/icon.png" width="96" alt="bbrust">
 
 </div>
 
