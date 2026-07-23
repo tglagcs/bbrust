@@ -1,6 +1,6 @@
 <div align="center">
 
-# bbrust
+# 🧹 bbrust
 
 **🇬🇧 [English](#english) · 🇷🇺 [Русский](#русский)**
 
